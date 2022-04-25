@@ -61,15 +61,21 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
       alert("value can't be eampty string");
     } else {
       metadata = {
-        name: data.get("name"),
-        description: data.get("discription"),
-        image: `https://ipfs.io/ipfs/${myipfsHash}`,
-        attributes: [
-          {
-            trait_type: data.get("type"),
-            value: data.get("value"),
-          },
-        ],
+        pinataMetadata: {
+          name: data.get("name"),
+        },
+
+        pinataContent: {
+          name: data.get("name"),
+          description: data.get("discription"),
+          image: `https://ipfs.io/ipfs/${myipfsHash}`,
+          attributes: [
+            {
+              trait_type: data.get("type"),
+              value: data.get("value"),
+            },
+          ],
+        },
       };
     }
     console.log(JSON.stringify(metadata));

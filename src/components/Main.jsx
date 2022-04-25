@@ -46,14 +46,13 @@ const Main = () => {
   const updateEthers = () => {
     let provider = new ethers.providers.Web3Provider(window.ethereum || "https://ropsten.infura.io/v3/4ec867dab82f4ddba7eb9397fe80154f");
     let signer = provider.getSigner();
-    console.log("his")
+
 
     let tempContract = new ethers.Contract(
       ERC20ContractAddress,
       ERC20,
       signer
     );
-    console.log("his1")
     setERC20Contract(tempContract);
 
     let tempERC721 = new ethers.Contract(
@@ -61,7 +60,6 @@ const Main = () => {
       ERC721,
       signer
     );
-    console.log("his3")
     setERC721Contract(tempERC721);
 
     let tempMarket = new ethers.Contract(NFTMarketAddress, Market, signer);
