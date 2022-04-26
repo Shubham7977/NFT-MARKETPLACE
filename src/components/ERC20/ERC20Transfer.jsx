@@ -12,7 +12,8 @@ const ERC20Transfer = ({ERC20Contract, showAlert}) => {
             showAlert("need amount more than 0", "warning");
         }
         else{
-            await ERC20Contract.transfer(data.get("to"),data.get("amount")).then(()=>{
+            await ERC20Contract.transfer(data.get("to"),data.get("amount")).then((response)=>{
+              console.log(response);
                 showAlert("token transferred successfully", "success");
             }).catch((error)=>{
                 showAlert(error, "danger");

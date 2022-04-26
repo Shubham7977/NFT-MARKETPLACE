@@ -13,7 +13,7 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
   const API_SECRET =
     "2d3615c69d4dadcc139980cc33034aaedacd11fc68fbeee45a386f363f59c642";
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
-  const nftContract = "0xc5D8A479d50512BF5FFF86722995211f8e440118";
+  // const nftContract = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
 
   const handleFile = async (fileToHandle) => {
     console.log("starting");
@@ -115,12 +115,21 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
       showAlert("empty string is not valid", "warning");
     } else {
       console.log(data.get("string"), `https://ipfs.io/ipfs/${nftHash}`);
-      let response = await ERC721Contract.MintToken(
-        data.get("string"),
-        `https://ipfs.io/ipfs/${nftHash}`
-      );
-      await response.wait();
-      console.log(await response);
+    //   let response = await ERC721Contract.MintToken(
+    //     data.get("string"),
+    //     `https://ipfs.io/ipfs/${nftHash}`
+    //   );
+    //   await response.wait();
+    //   console.log(await response);
+    //   console.log(response.hash);
+    //   console.log(response.from);
+    await ERC721Contract.MintToken(
+            data.get("string"),
+            `https://ipfs.io/ipfs/${nftHash}`
+          ).then(async(response)=>{
+            console.log(await response);
+
+          })
 
         // .then(async (response) => {
         //   console.log(await response);

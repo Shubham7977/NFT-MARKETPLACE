@@ -29,9 +29,9 @@ const Main = () => {
   const [ERC721Contract, setERC721Contract] = useState(null);
   const [marketplace, setMarketplace] = useState(null);
 
-  const ERC20ContractAddress = "0x579BA2531494Dbf862dd1d1E763e2BB231075a3f";
-  const ERC721ContractAddress = "0xc5D8A479d50512BF5FFF86722995211f8e440118";
-  const NFTMarketAddress = "0x04F6E55857ab6e3ad494e1Fe0D45Eea080b126E7";
+  const ERC20ContractAddress = process.env.REACT_APP_ERC20_CONTRACT_ADDRESS;
+  const ERC721ContractAddress = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
+  const NFTMarketAddress = process.env.REACT_APP_MARKET_ADDRESS;
 
   const showAlert = (message1, type) => {
     setAlert({
@@ -69,7 +69,6 @@ const Main = () => {
 
   const onConnection = async () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
-        // console.log(`${process.env.REACT_APP_NFT_CONTRACT_ADDRESS}`);
       await window.ethereum
         .request({ method: "eth_requestAccounts" })
         .then((result) => {
