@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
+import Spinner from '../Spinner';
 
 const MarketApproveERC20 = ({showAlert,marketplace}) => {
+  const [spin, setSpin] = useState(false);
 
     const onAllow = async(event) => {
+      setSpin(true);
         event.preventDefault();
         const data = new FormData(event.target);
         if(data.get("amount") <= 0){
@@ -10,8 +13,10 @@ const MarketApproveERC20 = ({showAlert,marketplace}) => {
         }else{
             await marketplace.getApproveTokenfor(data.get("amount")).then(()=>{
                 showAlert("approved successfully", "success");
+                setSpin(false);
             }).catch((error)=>{
                 showAlert(error, "danger");
+                setSpin(false);
             })
         }
     }
@@ -26,6 +31,9 @@ const MarketApproveERC20 = ({showAlert,marketplace}) => {
             <input type="text" name="amount" className="form-control"  />
           </div>
           <button className="btn btn-primary">Allow</button>
+          <div className='mt-2'>
+              {spin && <Spinner />}
+            </div>
         </form>
       </div>
       <hr className="container text-center" style={{ width: "40rem" }} />

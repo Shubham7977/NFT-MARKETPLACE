@@ -1,31 +1,28 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Spinner from "../Spinner";
 
 const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
   const [file, setFile] = useState();
   const [myipfsHash, setMyipfsHash] = useState("");
   const [nftHash, setNftHash] = useState("");
-//   const [count, setcount] = useState(1);
   const [first2, setFirst2] = useState(false);
-//   const [first3, setFirst3] = useState(false);
+  const [spin, setSpin] = useState(false);
+
 
   const API_KEY = "907ee42677bb32545ae0";
   const API_SECRET =
     "2d3615c69d4dadcc139980cc33034aaedacd11fc68fbeee45a386f363f59c642";
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
-  // const nftContract = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
+  const nftContract = "0x331b946Cd0823C4C0DD0ee1796D3aB7C994764d4";
 
-  const handleFile = async (fileToHandle) => {
-    console.log("starting");
-
+  const handleFile = async (fileToHandle) => { ///file upload to pinata
+    // console.log("starting");
     // initialize the form data
     let formData = new FormData();
-
     // append the file form data to
     formData.append("file", fileToHandle);
-
     // the endpoint needed to upload the file
-
     await axios
       .post(url, formData, {
         maxContentLength: "Infinity",
@@ -37,16 +34,17 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
       })
       .then((response) => {
         setMyipfsHash(response.data.IpfsHash);
-        console.log(response);
-        console.log("ipfs hash of picture", response.data.IpfsHash);
+        // console.log(response);
+        // console.log("ipfs hash of picture", response.data.IpfsHash);
         showAlert("file uploaded successfully", "success");
       });
   };
 
   const onValue = async (event) => {
-    //   if(!first1){
-    //     showAlert("first upload an image", "warning");
-    //   }
+    setSpin(true);
+    // if (!first2) {
+    //   showAlert("first upload an image", "warning");
+    // }
     event.preventDefault();
     const data = new FormData(event.target);
     let metadata;
@@ -78,7 +76,7 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
         },
       };
     }
-    console.log(JSON.stringify(metadata));
+    // console.log(JSON.stringify(metadata));
 
     const pinJSONToIPFS = (pinataApiKey, pinataSecretApiKey, JSONBody) => {
       const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
@@ -91,59 +89,76 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
         })
         .then(async function (response) {
           handleFile(file);
-          console.log("uploaded json", response.data.IpfsHash);
+          // console.log("uploaded json", response.data.IpfsHash);
           setNftHash(response.data.IpfsHash);
           showAlert("data uploaded successfully", "success");
-
-          setFirst2(true);
         })
         .catch(function (error) {
           console.log(error);
         });
     };
 
-    pinJSONToIPFS(API_KEY, API_SECRET, metadata);
+    pinJSONToIPFS(API_KEY, API_SECRET, metadata).then(()=>{
+      setSpin(false);
+      setFirst2(true);
+    });
   };
 
   const onMint = async (event) => {
-    // if (!first2) {
-    //   showAlert("first upload an metadata", "warning");
-    // }
-    event.preventDefault();
-    const data = new FormData(event.target);
-    if (data.get("string") === "") {
-      showAlert("empty string is not valid", "warning");
+    if (!first2) {
+      showAlert("first upload an metadata", "warning");
     } else {
-      console.log(data.get("string"), `https://ipfs.io/ipfs/${nftHash}`);
-    //   let response = await ERC721Contract.MintToken(
-    //     data.get("string"),
-    //     `https://ipfs.io/ipfs/${nftHash}`
-    //   );
-    //   await response.wait();
-    //   console.log(await response);
-    //   console.log(response.hash);
-    //   console.log(response.from);
-    await ERC721Contract.MintToken(
-            data.get("string"),
-            `https://ipfs.io/ipfs/${nftHash}`
-          ).then(async(response)=>{
-            console.log(await response);
-
-          })
-
-        // .then(async (response) => {
+      setSpin(true);
+      event.preventDefault();
+      const data = new FormData(event.target);
+      if (data.get("string") === "") {
+        showAlert("empty string is not valid", "warning");
+      } else {
+        console.log(data.get("string"), `https://ipfs.io/ipfs/${nftHash}`);
+        //   let response = await ERC721Contract.MintToken(
+        //     data.get("string"),
+        //     `https://ipfs.io/ipfs/${nftHash}`
+        //   );
+        //   await response.wait();
         //   console.log(await response);
-        // //     await marketplace.sell(nftContract,count,data.get("price"))
-        // //     .then(()=>{
-        // //       showAlert("Token minted successfully and added to the marketplace", "success");
-        // //       setcount(count+=1);
-        // //     }).catch((error)=>{
-        // //         console.log(error)
-        // //     })
-        // // })
-        // // .catch(() => {
-        // //   showAlert("string is not pelindrome", "danger");
-        // });
+        //   console.log(response.hash);
+        //   console.log(response.from);
+        await ERC721Contract.MintToken(
+          data.get("string"),
+          `https://ipfs.io/ipfs/${nftHash}`
+        ).then(async (response) => {
+          // console the response
+          // console.log(response);
+          //wait for the log(response)
+          let eventResult = response.wait();
+          // console.log("response", await eventResult);
+          // setObj1(await eventResult);
+          // console.log(await obj1);
+          let responseData = await eventResult;
+          // console.log(responseData);
+          //  console.log(responseData?.logs);
+          // console.log("event", responseData?.logs[2]);
+          // console.log("event data", parseInt(responseData?.logs[2].data));
+
+          //add to marketplace
+          await marketplace
+            .sell(
+              nftContract,
+              parseInt(responseData?.logs[2].data),
+              data.get("price")
+            )
+            .then(() => {
+              console.log("placed to marketplace");
+              showAlert("Added to the marketplace", "success");
+            })
+            .catch(() => {
+              showAlert("increase Allowance", "warning");
+            });
+            setSpin(false);
+        });
+
+
+      }
     }
   };
   return (
@@ -217,6 +232,9 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
             <button className="btn btn-primary" type="submit">
               Upload Data
             </button>
+            {/* <div>
+              {spin && <Spinner />}
+            </div> */}
           </form>
         </div>
         <hr className="container text-center" style={{ width: "40rem" }} />
@@ -238,11 +256,10 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
               </label>
               <input type="text" name="price" className="form-control" />
             </div>
-            {/* <div className="my-3">
-            <label className="form-label"><small>Token URI</small></label>
-            <input type="text" name="uri" className="form-control" />
-          </div> */}
             <button className="btn btn-primary">Mint NFT</button>
+            <div className="mt-3">
+              {spin && <Spinner />}
+            </div>
           </form>
         </div>
         <hr className="container text-center" style={{ width: "40rem" }} />

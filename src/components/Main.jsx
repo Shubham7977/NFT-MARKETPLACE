@@ -20,6 +20,9 @@ import FetchMarketItems from "./Market/FetchMarketItems";
 import FetchMyNfts from "./Market/FetchMyNfts";
 import FetchItemsCreated from "./Market/FetchItemsCreated";
 import CheckBalanceERC20 from "./ERC20/CheckBalanceERC20";
+import CheckHeighestBid from "./Market/CheckHeighestBid";
+import Itemcard from "./Market/Itemcard";
+import Spinner from "./Spinner";
 
 const Main = () => {
   const [alert, setAlert] = useState(null);
@@ -28,10 +31,11 @@ const Main = () => {
   const [ERC20Contract, setERC20Contract] = useState(null);
   const [ERC721Contract, setERC721Contract] = useState(null);
   const [marketplace, setMarketplace] = useState(null);
+  const [spin, setSpin] = useState(false);
 
-  const ERC20ContractAddress = process.env.REACT_APP_ERC20_CONTRACT_ADDRESS;
-  const ERC721ContractAddress = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
-  const NFTMarketAddress = process.env.REACT_APP_MARKET_ADDRESS;
+  const ERC20ContractAddress = "0x58cEFB872872514b812c4c80A9Cf12701DAea3A6";
+  const ERC721ContractAddress = "0x331b946Cd0823C4C0DD0ee1796D3aB7C994764d4";
+  const NFTMarketAddress = "0x915c6aB38658c88a2CDF302E532a231B3f47da2e";
 
   const showAlert = (message1, type) => {
     setAlert({
@@ -44,22 +48,16 @@ const Main = () => {
   };
 
   const updateEthers = () => {
-    let provider = new ethers.providers.Web3Provider(window.ethereum || "https://ropsten.infura.io/v3/4ec867dab82f4ddba7eb9397fe80154f");
+    let provider = new ethers.providers.Web3Provider(
+      window.ethereum ||
+        "https://ropsten.infura.io/v3/4ec867dab82f4ddba7eb9397fe80154f"
+    );
     let signer = provider.getSigner();
 
-
-    let tempContract = new ethers.Contract(
-      ERC20ContractAddress,
-      ERC20,
-      signer
-    );
+    let tempContract = new ethers.Contract(ERC20ContractAddress, ERC20, signer);
     setERC20Contract(tempContract);
 
-    let tempERC721 = new ethers.Contract(
-      ERC721ContractAddress,
-      ERC721,
-      signer
-    );
+    let tempERC721 = new ethers.Contract(ERC721ContractAddress, ERC721, signer);
     setERC721Contract(tempERC721);
 
     let tempMarket = new ethers.Contract(NFTMarketAddress, Market, signer);
@@ -68,6 +66,8 @@ const Main = () => {
   };
 
   const onConnection = async () => {
+    // console.log(process.env.REACT_APP_MARKET_ADDRESS)
+    setSpin(true);
     if (window.ethereum && window.ethereum.isMetaMask) {
       await window.ethereum
         .request({ method: "eth_requestAccounts" })
@@ -76,6 +76,7 @@ const Main = () => {
           updateEthers();
           setIsConnected(true);
           showAlert("Account Connected", "success");
+          setSpin(false);
         })
         .catch((error) => {
           showAlert(error, "danger");
@@ -107,22 +108,41 @@ const Main = () => {
       <Alert alert={alert} />
 
       <div className="App-header my-2">
-        {!isConnected && (
+        {!isConnected && !spin && (
           <button className="btn btn-primary my-3" onClick={onConnection}>
             Connect Wallet
           </button>
+        )}
+        {spin && (
+          <div className="mt-3">
+            <Spinner />
+          </div>
         )}
         {isConnected && <p>Connected Address:</p>}
         {isConnected && <p>{defaultAccount}</p>}
         {isConnected && (
           <hr className="container text-center" style={{ width: "40rem" }} />
         )}
+        {isConnected && (
+          <div className="container text-center">
+            <h1>NFT MARKETPLACE</h1>
+            <hr className="container text-center" style={{ width: "40rem" }} />
+            <p className="mt-2">register your creative work on Blokchain</p>
+            <p>And get digital identity of work</p>
+            <hr className="container text-center" style={{ width: "25rem" }} />
+          </div>
+        )}
 
         {isConnected && (
           <ERC20Transfer ERC20Contract={ERC20Contract} showAlert={showAlert} />
         )}
 
-        {isConnected && <CheckBalanceERC20 ERC20Contract={ERC20Contract} showAlert={showAlert} />}
+        {isConnected && (
+          <CheckBalanceERC20
+            ERC20Contract={ERC20Contract}
+            showAlert={showAlert}
+          />
+        )}
 
         {isConnected && (
           <MarketApproveERC20 marketplace={marketplace} showAlert={showAlert} />
@@ -147,24 +167,45 @@ const Main = () => {
           <ERC721Uri ERC721Contract={ERC721Contract} showAlert={showAlert} />
         )}
 
+        {/* {isConnected && <GetAllowanceERC20 showAlert={showAlert} marketplace={marketplace} />} */}
 
-       {/* {isConnected && <GetAllowanceERC20 showAlert={showAlert} marketplace={marketplace} />} */}
+        {isConnected && <Buy marketplace={marketplace} showAlert={showAlert} />}
 
+        {isConnected && <Bid marketplace={marketplace} showAlert={showAlert} />}
 
-       {isConnected && <Buy marketplace={marketplace} showAlert={showAlert}/>}
+        {isConnected && (
+          <EndAuction marketplace={marketplace} showAlert={showAlert} />
+        )}
 
+        {isConnected && (
+          <WithdrawAmount marketplace={marketplace} showAlert={showAlert} />
+        )}
 
-       {isConnected && <Bid marketplace={marketplace} showAlert={showAlert} />}
+        {isConnected && (
+          <CheckHeighestBid marketplace={marketplace} showAlert={showAlert} />
+        )}
 
-       {isConnected &&  <EndAuction marketplace={marketplace} showAlert={showAlert} />}
+        {isConnected && (
+          <FetchMarketItems
+            marketplace={marketplace}
+            ERC721Contract={ERC721Contract}
+          />
+        )}
 
-       {isConnected &&  <WithdrawAmount  marketplace={marketplace} showAlert={showAlert} />}
+        {isConnected && <FetchMyNfts marketplace={marketplace} />}
 
-       {isConnected && <FetchMarketItems marketplace={marketplace} />}
+        {isConnected && <FetchItemsCreated marketplace={marketplace} />}
 
-       {isConnected && <FetchMyNfts marketplace={marketplace} />}
-
-       {isConnected &&  <FetchItemsCreated  marketplace={marketplace} />}
+        {/* <div className="d-flex flex-column">
+       <Itemcard />
+       <Itemcard />
+       <Itemcard />
+       <Itemcard />
+       <Itemcard />
+       <Itemcard />
+       <Itemcard />
+       <Itemcard />
+       </div> */}
       </div>
     </>
   );

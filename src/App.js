@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 import Install from "./components/Install";
-import Main from './components/Main';
+import Main from "./components/Main";
 
 const App = () => {
   if (window.ethereum) {
-    return <Main />
+    return <Main />;
   } else {
     return <Install />;
   }
 };
 
-export default App
+export default App;
