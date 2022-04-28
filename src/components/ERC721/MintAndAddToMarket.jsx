@@ -14,7 +14,7 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
   const API_SECRET =
     "2d3615c69d4dadcc139980cc33034aaedacd11fc68fbeee45a386f363f59c642";
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
-  const nftContract = "0x331b946Cd0823C4C0DD0ee1796D3aB7C994764d4";
+  const nftContract = "0x8C4999D14cF44703075A584fb020Bf460c0144d0";
 
   const handleFile = async (fileToHandle) => { ///file upload to pinata
     // console.log("starting");

@@ -3,7 +3,7 @@ import Spinner from "../Spinner";
 
 const EndAuction = ({ marketplace, showAlert }) => {
   const [spin, setSpin] = useState(false);
-  const NFTContract = "0x331b946Cd0823C4C0DD0ee1796D3aB7C994764d4";
+  const NFTContract = "0x1472Fb8B030647295a6f0a7259910596a00d20c0";
 
   const onEnd = async (event) => {
     setSpin(true);

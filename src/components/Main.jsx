@@ -11,7 +11,6 @@ import ERC721OwnerOf from "./ERC721/ERC721OwnerOf";
 import MintAndAddToMarket from "./ERC721/MintAndAddToMarket";
 import MarketApproveERC20 from "./ERC721/MarketApproveERC20";
 import ERC721Uri from "./ERC721/ERC721Uri";
-// import GetAllowanceERC20 from "./ERC721/GetAllowanceERC20";
 import Buy from "./Market/Buy";
 import Bid from "./Market/Bid";
 import EndAuction from "./Market/EndAuction";
@@ -21,7 +20,7 @@ import FetchMyNfts from "./Market/FetchMyNfts";
 import FetchItemsCreated from "./Market/FetchItemsCreated";
 import CheckBalanceERC20 from "./ERC20/CheckBalanceERC20";
 import CheckHeighestBid from "./Market/CheckHeighestBid";
-import Itemcard from "./Market/Itemcard";
+// import Itemcard from "./Market/Itemcard";
 import Spinner from "./Spinner";
 
 const Main = () => {
@@ -33,9 +32,9 @@ const Main = () => {
   const [marketplace, setMarketplace] = useState(null);
   const [spin, setSpin] = useState(false);
 
-  const ERC20ContractAddress = "0x58cEFB872872514b812c4c80A9Cf12701DAea3A6";
-  const ERC721ContractAddress = "0x331b946Cd0823C4C0DD0ee1796D3aB7C994764d4";
-  const NFTMarketAddress = "0x915c6aB38658c88a2CDF302E532a231B3f47da2e";
+  const ERC20ContractAddress = "0x21E85F436d7e86E03ad89Ea635C4a1C824B8CF34";
+  const ERC721ContractAddress = "0x8C4999D14cF44703075A584fb020Bf460c0144d0";
+  const NFTMarketAddress = "0x795f5A864ee810eee8f35d768C5B6995c5839985";
 
   const showAlert = (message1, type) => {
     setAlert({
@@ -130,7 +129,7 @@ const Main = () => {
             <p className="mt-2">register your creative work on Blokchain</p>
             <p>And get digital identity of work</p>
             <hr className="container text-center" style={{ width: "25rem" }} />
-          </div>
+          </div> 
         )}
 
         {isConnected && (
@@ -196,16 +195,6 @@ const Main = () => {
 
         {isConnected && <FetchItemsCreated marketplace={marketplace} />}
 
-        {/* <div className="d-flex flex-column">
-       <Itemcard />
-       <Itemcard />
-       <Itemcard />
-       <Itemcard />
-       <Itemcard />
-       <Itemcard />
-       <Itemcard />
-       <Itemcard />
-       </div> */}
       </div>
     </>
   );
