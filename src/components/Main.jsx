@@ -32,9 +32,10 @@ const Main = () => {
   const [marketplace, setMarketplace] = useState(null);
   const [spin, setSpin] = useState(false);
 
-  const ERC20ContractAddress = "0x21E85F436d7e86E03ad89Ea635C4a1C824B8CF34";
-  const ERC721ContractAddress = "0x8C4999D14cF44703075A584fb020Bf460c0144d0";
-  const NFTMarketAddress = "0x795f5A864ee810eee8f35d768C5B6995c5839985";
+  const ERC20ContractAddress = process.env.REACT_APP_ERC20_CONTRACT_ADDRESS;
+  const ERC721ContractAddress = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
+  const NFTMarketAddress =process.env.REACT_APP_MARKET_ADDRESS;
+  
 
   const showAlert = (message1, type) => {
     setAlert({

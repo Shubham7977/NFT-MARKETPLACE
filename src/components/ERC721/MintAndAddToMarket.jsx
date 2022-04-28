@@ -10,11 +10,12 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
   const [spin, setSpin] = useState(false);
 
 
-  const API_KEY = "907ee42677bb32545ae0";
+  const API_KEY = process.env.REACT_APP_PINATA_API_KEY;
   const API_SECRET =
-    "2d3615c69d4dadcc139980cc33034aaedacd11fc68fbeee45a386f363f59c642";
-  const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
-  const nftContract = "0x8C4999D14cF44703075A584fb020Bf460c0144d0";
+  process.env.REACT_APP_PINATA_API_SECRET_KEY;
+  const url = process.env.REACT_APP_PINATA_URL;
+  const nftContract = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
+
 
   const handleFile = async (fileToHandle) => { ///file upload to pinata
     // console.log("starting");
@@ -150,14 +151,13 @@ const MintAndAddToMarket = ({ showAlert, marketplace, ERC721Contract }) => {
             .then(() => {
               console.log("placed to marketplace");
               showAlert("Added to the marketplace", "success");
+              setSpin(false);
             })
             .catch(() => {
               showAlert("increase Allowance", "warning");
-            });
-            setSpin(false);
+              setSpin(false);
+            }); 
         });
-
-
       }
     }
   };

@@ -14,6 +14,7 @@ const Itemcard = ({ ItemId, hBid, AuctionAdded, MarketAdded, url, price }) => {
           <a
             href={`https://ropsten.etherscan.io/address/${url}`}
             className="card-link"
+            rel="noreferrer"
             target="_blank"
           >
             <button className="btn btn-primary">Check on Etherscan</button>

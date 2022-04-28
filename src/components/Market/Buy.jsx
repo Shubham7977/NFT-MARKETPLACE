@@ -3,7 +3,7 @@ import Spinner from "../Spinner";
 
 const Buy = ({ marketplace, showAlert }) => {
   const [spin, setSpin] = useState(false);
-  const NFTAddress = "0x8C4999D14cF44703075A584fb020Bf460c0144d0";
+  const NFTAddress = process.env.REACT_APP_NFT_CONTRACT_ADDRESS;
 
   const onBuy = async (event) => {
     setSpin(true);
